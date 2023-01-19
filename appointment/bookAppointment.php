@@ -1,50 +1,18 @@
 <?php
-
-// // Available days
-// $days = array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
-
-// // Available hours
-// $hours = array("9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00");
-
-// // Booked appointments
-// $booked = array();
-
-// // Function to book an appointment
-// function bookAppointment($day, $hour) {
-//     global $days, $hours, $booked;
-
-//     // Check if the day and hour are available
-//     if (in_array($day, $days) && in_array($hour, $hours)) {
-//         // Check if the appointment is not already booked
-//         if (!in_array(array($day, $hour), $booked)) {
-//             // Book the appointment
-//             $booked[] = array($day, $hour);
-//             // Remove the hour from the available hours
-//             $hours = array_diff($hours, array($hour));
-//             echo "Appointment booked successfully at $hour on $day \n";
-//         } else {
-//             echo "Sorry, the appointment at $hour on $day is already booked \n";
-//         }
-//     } else {
-//         echo "Invalid day or hour \n";
-//     }
-// }
-
-// bookAppointment("Monday", "9:00");
-// bookAppointment("Monday", "9:00");
-// bookAppointment("Tuesday", "9:00");
-// bookAppointment("Wednesday", "10:00");
-// bookAppointment("Invalid", "Invalid");
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  
+  ///////////////////////////////////****döngü**** *////////////////////////////////////////
 $days = array("pazartesi", "sali", "carsamba", "persembe", "cuma");
-$start_time = "09:00:00";
-$end_time = "20:00:00";
+$start = strtotime("9:00:00"); // burda unix zaman yapısını kullandım 
+$end = strtotime("20:00:00");
+$arttir = 1800; // 30 dakikalık aralık olduğunu belirtiyor saniye cinsinden
+
+$current = $start;
+while($current <= $end) { // current değikeni end değikenine eşit ve küçük olana kadar devam eder
+
+    echo date("H:i:s", $current) . "\n"; // saatleri ekrana basmak için kullanılır h: saaat i: dakika s: saniye
+    $current += $arttir; // arttir ise her seferinde 30 dk üstüne ekleyerek gitesi için kullanılıyor currente bitene kadar
+}
+////////////////////////////////////////////// döngü kısmı //////////////////////////
+
 //alınan randevular
 $booked = array();
 
@@ -52,12 +20,40 @@ function bookAppointment($day, $hour){
     global $days, $start_time, $end_time, $booked;
 
     if (in_array($day, $days) && in_array($hour, $hours) ) { //gün ve saatlere uygun olan randevu varmı diye kontrol sağlanacak olan yer
-        
+        if(!in_array(array($day, $hour), $booked)){ // önceden rezerve edilip edilmediğini kontorl ediyor eğer rezerve edilmemişse işleme devam ediyor
+            $booked[] = array($day,$hour); //burda gün ve saat dizinlerini içeren bir dizi burda tutuyorum yapılan randevuları
+            $hours = array_diff($hours, array($day)); //burda belirli gün için alınan randevuların saatelreini tutmaktadır yalnızca belirli gün için mevcut saatlerde randevu alınabilir
+            echo "Booked successfully at $hour on $day \n";
+
+        }
+        else{
+            echo "sorry, the appointment at $hour on $day is already bookeed \n"; //daha önceden alındı mesajı
+        }
+        else {
+            echo "geçersiz day or hour \n";//geçersiz gün ve saat
+        }
     }
-    foreach ($days as $value) {
-        echo "$value <br>";
+    
+}
+///////////////////////////function/////////////////////////////////////
+
+//function part
+$start_time = "09:00:00";
+$end_time = "20:00:00";
+
+function loop_between_times($start_time, $end_time, $interval) {
+    global $start_time, $end_time;
+
+    $start = strtotime($start_time);
+    $end = strtotime($end_time);
+
+    $current = $start;
+    while($current <= $end) {
+        
+        echo date("H:i:s", $current) . "\n";
+        $current += $interval;
     }
 }
-
+/////////////////////////////////////////////////////////////////////
 
 ?>
