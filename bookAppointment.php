@@ -1,61 +1,58 @@
 <?php
+// $randevular = array();
+// $start = "09:00";
+// $end = "20:00";
+// $day = ["pazartesi","salı", "çarşamba","perşembe"];
 
+// function build_list($start, $end, $days){
+//   global $day, $start,$end, $randevular;
 
-  ///////////////////////////////////*****döngü start*** *////////////////////////////////////////
-// $days = array("pazartesi", "sali", "carsamba", "persembe", "cuma");
-// $start = strtotime("9:00:00"); // burda unix zaman yapısını kullandım 
-// $end = strtotime("20:00:00");
-// $arttir = 1800; // 30 dakikalık aralık olduğunu belirtiyor saniye cinsinden
+//   if (in_array($day, $days) && in_array($start,$end, $hours)) { 
+//       if(!in_array(array($day, $hour), $randevular)){ 
+//           $randevular[] = array($day, $hour);
+//           $hours = array_diff($hours, array($hour)); 
+//           echo "$hour saatinde $day tarihinde randevu başarıyla alındı \n";
 
-// $current = $start;
-// while($current <= $end) { // current değikeni end değikenine eşit ve küçük olana kadar devam eder
+//       }
+//       elseif (in_array(array($day, $hour), $randevular)) {
+//           echo "Üzgünüz, $hour saatinde $day tarihindeki randevu daha önceden alınmıştır \n"; 
+//       }
+//   }
+//   else {
+//       echo "geçersiz gün veya saat \n";
+//   }
 
-//     echo date("H:i:s", $current) . "\n"; // saatleri ekrana basmak için kullanılır h: saaat i: dakika s: saniye
-//     $current += $arttir; // arttir ise her seferinde 30 dk üstüne ekleyerek gitesi için kullanılıyor currente bitene kadar
 // }
-////////////////////////////////////////////// döngü kısmı-finish //////////////////////////
 
-//alınan randevular
-$booked = array();
+// $alinabilir_randevu=["salı:09.00-09.30","salı:09.30-10.00"];
+// print_r($randevular);
 
-function bookAppointment($day, $loop_between_times){//funciton'ı buraya yazdım 
-    global $days, $start_time, $end_time, $booked;
+$start = "09:00";
+$end = "20:00";
+$days = ["pazartesi","salı","çarşamba","perşembe","cuma"];
 
-    if (in_array($day, $days) && in_array($hour, $hours) ) { //gün ve saatlere uygun olan randevu varmı diye kontrol sağlanacak olan yer
-        if(!in_array(array($day, $hour), $booked)){ // önceden rezerve edilip edilmediğini kontorl ediyor eğer rezerve edilmemişse işleme devam ediyor
-            $booked[] = array($day,$hour); //burda gün ve saat dizinlerini içeren bir dizi burda tutuyorum yapılan randevuları
-            $hours = array_diff($hours, array($day)); //burda belirli gün için alınan randevuların saatelreini tutmaktadır yalnızca belirli gün için mevcut saatlerde randevu alınabilir
-            echo "Booked successfully at $hour on $day \n";
+$randevular = create_appointments($start, $end, $days);
+echo "<pre>";
+print_r($randevular);
+echo "</pre>";
+function create_appointments($start, $end, $days) {
+  $randevular = array();
 
-        }
-        else{
-            echo "sorry, the appointment at $hour on $day is already bookeed \n"; //daha önceden alındı mesajı
-        }
-        else{
-             echo "geçersiz day or hour \n";//geçersiz gün ve saat
-        }
-    }
-    
+  foreach ($days as $day) {
+      $hours = array();
+      $current_time = strtotime($start);
+
+      while ($current_time <= strtotime($end)) {
+          $hour = date("H:i", $current_time);
+          $day = date("w", $current_time);//burayla ilgilen
+          $hours[] = $hour;
+          $current_time = strtotime("+30 minutes", $current_time);
+      }
+
+      $randevular[$day] = $hours;
+  }
+
+  return $randevular;
 }
-///////////////////////////////function part///////////////////////////////////
-
-
-$start_time = "09:00:00";
-$end_time = "20:00:00";
-
-function loop_between_times($start_time, $end_time, $interval) {
-    global $start_time, $end_time;
-
-    $start = strtotime($start_time);
-    $end = strtotime($end_time);
-
-    $current = $start;
-    while($current <= $end) {
-        
-        echo date("H:i:s", $current) . "\n";
-        $current += $interval;
-    }
-}
-/////////////////////////////////////////////////////////////////////
 
 ?>
